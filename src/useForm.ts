@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import { ChangeEvent, useCallback, useState } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { ValuesType } from 'utility-types';
 
 export interface FormProps<T> {
@@ -17,21 +16,21 @@ type RuleType<T> = RuleTypeComplex<T> | T;
 interface Rule<T> {
   required?: RuleType<boolean>;
   pattern?: RuleType<RegExp>;
-  validate?: RuleType<(value: ValuesType<T>) => boolean>;
+  validate?: RuleType<(value: T) => boolean>;
 }
 
 interface Rules<T> {
-  [key: string]: Rule<T>
+  [key: string]: Rule<ValuesType<T>>
 }
 
 interface Errors {
   [key: string]: string;
 }
 
-interface Bind<T, P extends ValuesType<T> = ValuesType<T>> {
-  (name: keyof T, rule?: Rule<T>): {
+interface Bind<T> {
+  <P>(name: keyof T, rule?: Rule<P>): {
     value?: P;
-    onChange: (value: P | ChangeEvent<HTMLInputElement>) => void;
+    onChange: (value?: P | ChangeEvent<HTMLInputElement>) => void;
   }
 }
 
@@ -62,7 +61,7 @@ function formatRuleType<T>(ruleType: RuleType<T>, name: string): RuleTypeComplex
   };
 }
 
-function validate<T>(value: ValuesType<T>, rule: Rule<T>): string | null {
+function validate<T>(value: T, rule: Rule<T>): string | null {
   if (rule.required) {
     const { value: ruleValue, message } = formatRuleType(rule.required, 'required');
     if (ruleValue && _.isEmpty(value)) {
@@ -103,18 +102,22 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
     return {
       value: values && values[name],
       onChange: valueOrEvent => {
-        const value = 'target' in valueOrEvent ? valueOrEvent.target.value : valueOrEvent;
-        const valuesNew = {
-          ...values,
-          [name]: value,
-        };
+        if (valueOrEvent != null) {
+          const value = (typeof valueOrEvent === 'object' && 'target' in valueOrEvent)
+            ? valueOrEvent.target.value : valueOrEvent;
 
-        if (name in errors) {
-          setErrors(_.omit(errors, [`${name}`]));
+          const valuesNew = {
+            ...values,
+            [name]: value,
+          };
+
+          if (name in errors) {
+            setErrors(_.omit(errors, [`${name}`]));
+          }
+
+          setValues(valuesNew);
+          setDirty(!_.isEqual(valuesNew, defaultValues));
         }
-
-        setValues(valuesNew);
-        setDirty(!_.isEqual(valuesNew, defaultValues));
       },
     };
   }, [values, rules, errors]);
