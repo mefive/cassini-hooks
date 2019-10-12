@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 import { ChangeEvent, useCallback, useState } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { ValuesType } from 'utility-types';
 
-interface Options<T> {
+export interface FormProps<T> {
   defaultValues?: T;
 }
 
@@ -34,7 +35,7 @@ interface Bind<T, P extends ValuesType<T> = ValuesType<T>> {
   }
 }
 
-interface UseForm<T> {
+export interface UseForm<T> {
   bind: Bind<T>;
   reset: (values: T) => void;
   values: T;
@@ -86,7 +87,7 @@ function validate<T>(value: ValuesType<T>, rule: Rule<T>): string | null {
   return null;
 }
 
-function useForm<T extends { [key: string]: any }>(options: Options<T>): UseForm<T> {
+function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseForm<T> {
   const [defaultValues, setDefaultValues] = useState<T>(options.defaultValues || {} as T);
   const [values, setValues] = useState<T>(defaultValues);
   const [errors, setErrors] = useState<Errors>({});

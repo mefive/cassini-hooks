@@ -1,6 +1,6 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
-import UserForm from './UserForm';
+import UserFormOuter from './UserFormOuter';
 
 function main() {
   const container = document.createElement('div');
@@ -8,7 +8,7 @@ function main() {
 
   ReactDOM.render(
     <>
-      <UserForm />
+      <UserFormOuter />
     </>,
     container,
   );
