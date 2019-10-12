@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "airbnb-typescript"
+  ],
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "react/jsx-props-no-spreading": "off"
+  }
+}

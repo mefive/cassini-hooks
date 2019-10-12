@@ -1,0 +1,56 @@
+{
+  "name": "cassini-hooks",
+  "version": "1.0.0",
+  "description": "react hooks for common use",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-types": "tsc",
+    "lint": "eslint src --fix --ext .js,.ts",
+    "expample": "webpack --mode=production --config=./examples/webpack.config.js",
+    "expample-dev": "webpack-dev-server --mode=development --config=./examples/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mefive/cassini-hooks.git"
+  },
+  "keywords": [
+    "react",
+    "hooks"
+  ],
+  "author": "mefive",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.6.0",
+    "@types/lodash": "^4.14.141",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.1",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.5.0",
+    "eslint-config-airbnb-typescript": "^5.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "html-webpack-plugin": "^3.2.0",
+    "react-dom": "^16.10.2",
+    "typescript": "^3.6.3",
+    "utility-types": "^3.8.0",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "react": "^16.10.2"
+  },
+  "bugs": {
+    "url": "https://github.com/mefive/cassini-hooks/issues"
+  },
+  "homepage": "https://github.com/mefive/cassini-hooks#readme"
+}
