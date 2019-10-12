@@ -8,7 +8,8 @@
     "check-types": "tsc",
     "lint": "eslint src --fix --ext .js,.ts",
     "expample": "webpack --mode=production --config=./examples/webpack.config.js",
-    "expample-dev": "webpack-dev-server --mode=development --config=./examples/webpack.config.js"
+    "expample-dev": "webpack-dev-server --mode=development --config=./examples/webpack.config.js",
+    "build": "babel src --out-dir lib --extensions '.ts'"
   },
   "repository": {
     "type": "git",
@@ -21,9 +22,11 @@
   "author": "mefive",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.6.4",
     "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.6.0",
     "@types/lodash": "^4.14.141",
