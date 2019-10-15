@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useForm } from '../../src';
-import { FormContext } from '../../src/useFormContext';
-import { User } from './types';
+import { useForm } from '../../../src';
+import { FormContext } from '../../../src/useFormContext';
+import { User } from '../types';
 import UserForm from './UserForm';
 
 const defaultValues = {

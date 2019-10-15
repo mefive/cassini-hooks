@@ -9,7 +9,7 @@
     "lint": "eslint src --fix --ext .js,.ts",
     "expample": "webpack --mode=production --config=./examples/webpack.config.js",
     "expample-dev": "webpack-dev-server --mode=development --config=./examples/webpack.config.js",
-    "build": "babel src --out-dir lib --extensions '.ts,.tsx'"
+    "build": "tsc --build tsconfig.prod.json"
   },
   "repository": {
     "type": "git",

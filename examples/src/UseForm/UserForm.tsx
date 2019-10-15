@@ -1,6 +1,6 @@
 import * as React from 'react';
-import useFormContext from '../../src/useFormContext';
-import { User } from './types';
+import useFormContext from '../../../src/useFormContext';
+import { User } from '../types';
 
 function UserForm() {
   const context = useFormContext<User>();

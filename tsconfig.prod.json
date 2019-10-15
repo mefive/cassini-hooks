@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "noEmit": false,
+    "strict": true,
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "declaration": true,
+    "outDir": "./lib"
+  },
+  "include": [
+    "src/**/*.*"
+  ]
+}
