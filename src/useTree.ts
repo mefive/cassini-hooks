@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import * as _ from 'lodash';
+import { useCallback, useMemo, useState } from 'react';
 
 interface TreeNode {
   key: string;
@@ -16,45 +16,63 @@ interface UseTree {
   expandedKeys: string[];
   setExpandedKeys: (keys: string[]) => void;
   dataSource: ListNode[];
-}
-
-function getDataSource<T extends TreeNode>(treeData: T[], expandedRowKeys: string[]): ListNode[] {
-  const rows: ListNode[] = [];
-
-  const walk = (nodes: TreeNode[], level = 0) => {
-    nodes.forEach((node: TreeNode) => {
-      const { children } = node;
-      rows.push({
-        ..._.omit(node, ['children']),
-        level,
-        children: children && children.map(c => c.key),
-      });
-
-      if (children && expandedRowKeys.includes(node.key)) {
-        walk(children, level + 1);
-      }
-    });
-  };
-
-  if (treeData != null) {
-    walk(treeData);
-  }
-
-  return rows;
+  expandToLevel: (level: number) => void;
 }
 
 function useTree<T extends TreeNode>(treeData: T[], defaultExpandedKeys: string[] = []): UseTree {
   const [expandedKeys, setExpandedKeys] = useState<string []>(defaultExpandedKeys);
-  const [dataSource, setDataSource] = useState(getDataSource(treeData, expandedKeys));
 
-  useEffect(() => {
-    setDataSource(getDataSource(treeData, expandedKeys));
+  const dataSource = useMemo<ListNode[]>(() => {
+    const lns: ListNode[] = [];
+
+    const walk = (nodes: TreeNode[], level = 0) => {
+      nodes.forEach((node: TreeNode) => {
+        const { children } = node;
+        lns.push({
+          ..._.omit(node, ['children']),
+          level,
+          children: children && children.map(c => c.key),
+        });
+
+        if (children && expandedKeys.includes(node.key)) {
+          walk(children, level + 1);
+        }
+      });
+    };
+
+    if (treeData != null) {
+      walk(treeData);
+    }
+
+    return lns;
   }, [treeData, expandedKeys]);
+
+  const expandToLevel = useCallback<(level: number) => void>(level => {
+    const keys: string[] = [];
+    const walk = (nodes: TreeNode[], l = 0) => {
+      if (l > level) {
+        return;
+      }
+
+      nodes.forEach(node => {
+        keys.push(node.key);
+        const { children } = node;
+        if (children && children.length > 0) {
+          walk(children, level + 1);
+        }
+      });
+    };
+    if (treeData != null) {
+      walk(treeData);
+    }
+    setExpandedKeys(keys);
+  }, [treeData]);
 
   return {
     dataSource,
     expandedKeys,
     setExpandedKeys,
+    expandToLevel,
   };
 }
 
