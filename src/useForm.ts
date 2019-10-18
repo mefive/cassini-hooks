@@ -42,6 +42,7 @@ export interface UseForm<T> {
   dirty: boolean;
   errors: Errors;
   setErrors: (errors: Errors) => void;
+  getValues: () => T;
 }
 
 const defaultErrorMessage: { [key: string]: string } = {
@@ -124,7 +125,7 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
 
   const triggerValidation = useCallback<(keys?: [keyof T]) => boolean>(
     k => {
-      const keys = k || Object.keys(values);
+      const keys = k || Object.keys(rules);
       const errs: Errors = {};
 
       keys.forEach(key => {
@@ -154,6 +155,8 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
     setDirty(false);
   }), []);
 
+  const getValues = useCallback<() => T>(() => values, [values]);
+
   return {
     bind,
     reset,
@@ -162,6 +165,7 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
     dirty,
     errors,
     setErrors,
+    getValues,
   };
 }
 

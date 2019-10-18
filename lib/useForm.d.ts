@@ -29,6 +29,7 @@ export interface UseForm<T> {
     dirty: boolean;
     errors: Errors;
     setErrors: (errors: Errors) => void;
+    getValues: () => T;
 }
 declare function useForm<T extends {
     [key: string]: any;
