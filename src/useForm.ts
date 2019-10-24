@@ -1,36 +1,41 @@
 import * as _ from 'lodash';
-import { ChangeEvent, useCallback, useState } from 'react';
+import {
+  ChangeEvent, useCallback, useMemo, useState,
+} from 'react';
 import { ValuesType } from 'utility-types';
 
 export interface FormProps<T> {
   defaultValues?: T;
+  compare?: _.IsEqualCustomizer;
 }
 
-interface RuleTypeComplex<T> {
+export interface RuleTypeComplex<T> {
   value: T;
   message: string;
 }
 
-type RuleType<T> = RuleTypeComplex<T> | T;
+export type RuleType<T> = RuleTypeComplex<T> | T;
 
-interface Rule<T> {
+export interface Rule<T> {
   required?: RuleType<boolean>;
   pattern?: RuleType<RegExp>;
   validate?: RuleType<(value: T) => boolean>;
 }
 
-interface Rules<T> {
+export interface Rules<T> {
   [key: string]: Rule<ValuesType<T>>
 }
 
-interface Errors {
+export interface Errors {
   [key: string]: string;
 }
 
-interface Bind<T> {
+export interface Bind<T> {
   <P>(name: keyof T, rule?: Rule<P>): {
     value?: P;
-    onChange: (value?: P | ChangeEvent<HTMLInputElement>) => void;
+    onChange: (
+      value?: P | ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
+    ) => void;
   }
 }
 
@@ -43,6 +48,7 @@ export interface UseForm<T> {
   errors: Errors;
   setErrors: (errors: Errors) => void;
   getValues: () => T;
+  setValue: (name: keyof T, value: any) => void;
 }
 
 const defaultErrorMessage: { [key: string]: string } = {
@@ -91,7 +97,10 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
   const [defaultValues, setDefaultValues] = useState<T>(options.defaultValues || {} as T);
   const [values, setValues] = useState<T>(defaultValues);
   const [errors, setErrors] = useState<Errors>({});
-  const [dirty, setDirty] = useState<boolean>(false);
+  const dirty = useMemo<boolean>(
+    () => !_.isEqualWith(defaultValues, values, options.compare),
+    [defaultValues, values],
+  );
 
   const rules: Rules<T> = {};
 
@@ -117,7 +126,6 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
           }
 
           setValues(valuesNew);
-          setDirty(!_.isEqual(valuesNew, defaultValues));
         }
       },
     };
@@ -152,10 +160,17 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
   const reset = useCallback<(values: T) => void>((values1 => {
     setDefaultValues(values1);
     setValues(values1);
-    setDirty(false);
+    setErrors({});
   }), []);
 
   const getValues = useCallback<() => T>(() => values, [values]);
+
+  const setValue = useCallback<(name: keyof T, value: any) => void>((name, value) => {
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  }, [values]);
 
   return {
     bind,
@@ -166,6 +181,7 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
     errors,
     setErrors,
     getValues,
+    setValue,
   };
 }
 
