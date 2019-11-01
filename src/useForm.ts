@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import {
-  ChangeEvent, useCallback, useMemo, useState,
+  ChangeEvent, useCallback, useEffect, useMemo, useState,
 } from 'react';
 import { ValuesType } from 'utility-types';
 
@@ -49,6 +49,7 @@ export interface UseForm<T> {
   setErrors: (errors: Errors) => void;
   getValues: () => T;
   setValue: (name: keyof T, value: any) => void;
+  setValues: (values: T) => void;
 }
 
 const defaultErrorMessage: { [key: string]: string } = {
@@ -58,7 +59,7 @@ const defaultErrorMessage: { [key: string]: string } = {
 };
 
 function formatRuleType<T>(ruleType: RuleType<T>, name: string): RuleTypeComplex<T> {
-  if (typeof ruleType === 'object') {
+  if (typeof ruleType === 'object' && 'value' in ruleType) {
     return ruleType as RuleTypeComplex<T>;
   }
 
@@ -157,11 +158,10 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
       return Object.keys(errs).length === 0;
     }, [values, rules]);
 
-  const reset = useCallback<(values: T) => void>((values1 => {
-    setDefaultValues(values1);
-    setValues(values1);
+  useEffect(() => {
     setErrors({});
-  }), []);
+    setValues(defaultValues);
+  }, [defaultValues]);
 
   const getValues = useCallback<() => T>(() => values, [values]);
 
@@ -174,7 +174,7 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
 
   return {
     bind,
-    reset,
+    reset: setDefaultValues,
     values,
     triggerValidation,
     dirty,
@@ -182,6 +182,7 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
     setErrors,
     getValues,
     setValue,
+    setValues,
   };
 }
 

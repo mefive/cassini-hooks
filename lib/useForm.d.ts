@@ -37,6 +37,7 @@ export interface UseForm<T> {
     setErrors: (errors: Errors) => void;
     getValues: () => T;
     setValue: (name: keyof T, value: any) => void;
+    setValues: (values: T) => void;
 }
 declare function useForm<T extends {
     [key: string]: any;
