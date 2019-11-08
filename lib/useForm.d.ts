@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { ChangeEvent } from 'react';
 import { ValuesType } from 'utility-types';
 export interface FormProps<T> {
-    defaultValues?: T;
+    defaultValues?: T | null;
     compare?: _.IsEqualCustomizer;
 }
 export interface RuleTypeComplex<T> {
@@ -29,7 +29,7 @@ export interface Bind<T> {
 }
 export interface UseForm<T> {
     bind: Bind<T>;
-    reset: (values: T) => void;
+    reset: (values: T | null) => void;
     values: T;
     triggerValidation: (keys?: [keyof T]) => boolean;
     dirty: boolean;

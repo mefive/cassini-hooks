@@ -5,7 +5,7 @@ import {
 import { ValuesType } from 'utility-types';
 
 export interface FormProps<T> {
-  defaultValues?: T;
+  defaultValues?: T | null;
   compare?: _.IsEqualCustomizer;
 }
 
@@ -41,7 +41,7 @@ export interface Bind<T> {
 
 export interface UseForm<T> {
   bind: Bind<T>;
-  reset: (values: T) => void;
+  reset: (values: T | null) => void;
   values: T;
   triggerValidation: (keys?: [keyof T]) => boolean;
   dirty: boolean;
@@ -72,7 +72,7 @@ function formatRuleType<T>(ruleType: RuleType<T>, name: string): RuleTypeComplex
 function validate<T>(value: T, rule: Rule<T>): string | null {
   if (rule.required) {
     const { value: ruleValue, message } = formatRuleType(rule.required, 'required');
-    if (ruleValue && _.isEmpty(value)) {
+    if (ruleValue && (value == null || `${value}` === '' || (Array.isArray(value) && _.isEmpty(value)))) {
       return message;
     }
   }
@@ -172,9 +172,13 @@ function useForm<T extends { [key: string]: any }>(options: FormProps<T>): UseFo
     });
   }, [values]);
 
+  const reset = useCallback<(values: T | null) => void>(values1 => {
+    setDefaultValues(values1 || {} as T);
+  }, []);
+
   return {
     bind,
-    reset: setDefaultValues,
+    reset,
     values,
     triggerValidation,
     dirty,
