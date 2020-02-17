@@ -9,13 +9,13 @@ function useFormContext<T>(): UseForm<T> {
 
 export default useFormContext;
 
-export function FormContext<T>(props: UseForm<T> & { children?: React.ReactElement }) {
+export function FormContext<T>(
+  props: UseForm<T> & { children?: React.ReactElement },
+) {
   const { children, ...formProps } = props;
 
   return (
-    <FormGlobalContext.Provider
-      value={formProps as any}
-    >
+    <FormGlobalContext.Provider value={formProps as any}>
       {children}
     </FormGlobalContext.Provider>
   );
